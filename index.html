@@ -25,10 +25,9 @@
     </div>
     
     <script>
-        let totalAmount = 100000;
-        let usersLeft = 10;
-        const claimedKey = "blindBoxClaimed_" + window.location.href; // Khóa duy nhất dựa trên URL
-        
+        let usersLeft = 5;
+        const prizes = [1000, 5000, 10000, 30000, 50000]; // Giá trị cố định: 1k, 5k, 10k, 30k, 50k
+        const claimedKey = "blindBoxClaimed_" + window.location.href;
         let claimed = JSON.parse(localStorage.getItem(claimedKey)) || false;
         
         document.getElementById("giftBox").addEventListener("click", function() {
@@ -42,11 +41,11 @@
                 return;
             }
             
-            let amount = Math.floor(Math.random() * (50000 - 10000 + 1)) + 10000;
-            if (amount > totalAmount) amount = totalAmount;
-            totalAmount -= amount;
-            usersLeft--;
+            // Chọn ngẫu nhiên một giải thưởng từ mảng prizes
+            const randomIndex = Math.floor(Math.random() * prizes.length);
+            const amount = prizes[randomIndex];
             
+            usersLeft--;
             document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             localStorage.setItem(claimedKey, JSON.stringify(true));
             claimed = true;
