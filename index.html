@@ -27,7 +27,9 @@
     <script>
         let totalAmount = 100000;
         let usersLeft = 10;
-        let claimed = JSON.parse(localStorage.getItem("claimed")) || false;
+        const claimedKey = "blindBoxClaimed_" + window.location.href; // Khóa duy nhất dựa trên URL
+        
+        let claimed = JSON.parse(localStorage.getItem(claimedKey)) || false;
         
         document.getElementById("giftBox").addEventListener("click", function() {
             if (claimed) {
@@ -46,7 +48,8 @@
             usersLeft--;
             
             document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
-            localStorage.setItem("claimed", JSON.stringify(true));
+            localStorage.setItem(claimedKey, JSON.stringify(true));
+            claimed = true;
         });
     </script>
 </body>
