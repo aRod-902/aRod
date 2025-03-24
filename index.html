@@ -48,7 +48,7 @@
         h1 {
             color: #2ecc71; /* Màu xanh lá */
         }
-        #resetButton, #testResetButton {
+        #resetButton {
             display: none; /* Ẩn mặc định */
             margin-top: 20px;
             padding: 10px 20px;
@@ -59,14 +59,8 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #testResetButton {
-            background-color: #e74c3c; /* Màu đỏ để phân biệt */
-        }
         #resetButton:hover {
             background-color: #2980b9;
-        }
-        #testResetButton:hover {
-            background-color: #c0392b;
         }
     </style>
 </head>
@@ -78,7 +72,6 @@
         <div id="specialPrize">Bấm vào đây để xem giải đặc biệt!</div>
         <div id="specialPrizeMessage"></div>
         <button id="resetButton">Reset Trò Chơi</button>
-        <button id="testResetButton">Reset for Testing</button>
     </div>
     
     <script>
@@ -98,7 +91,6 @@
 
         const giftBox = document.getElementById("giftBox");
         const resetButton = document.getElementById("resetButton");
-        const testResetButton = document.getElementById("testResetButton");
         const result = document.getElementById("result");
         const specialPrize = document.getElementById("specialPrize");
         const specialPrizeMessage = document.getElementById("specialPrizeMessage");
@@ -108,7 +100,6 @@
         const isAdmin = urlParams.get('admin') === 'secret'; // Tham số bí mật: ?admin=secret
         if (isAdmin) {
             resetButton.style.display = 'block'; // Hiển thị nút Reset nếu là admin
-            testResetButton.style.display = 'block'; // Hiển thị nút Reset for Testing nếu là admin
         }
 
         // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận (bỏ qua cho admin)
@@ -179,26 +170,6 @@
             result.innerText = "";
             specialPrize.style.display = 'none';
             specialPrizeMessage.style.display = 'none';
-        });
-
-        // Xử lý nút Reset for Testing
-        testResetButton.addEventListener("click", function() {
-            // Xóa trạng thái trong localStorage
-            localStorage.removeItem(claimedKey);
-            localStorage.removeItem(amountKey);
-            localStorage.removeItem(usersLeftKey);
-
-            // Đặt lại các biến
-            claimed = false;
-            savedAmount = null;
-            usersLeft = 5;
-            giftBox.classList.remove("opened");
-            result.innerText = "";
-            specialPrize.style.display = 'none';
-            specialPrizeMessage.style.display = 'none';
-
-            // Chuyển về URL thông thường để test
-            window.location.href = 'https://arod-902.github.io/aRod/';
         });
     </script>
 </body>
