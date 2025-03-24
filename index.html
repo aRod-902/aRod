@@ -16,23 +16,23 @@
         #giftBox {
             width: 200px; 
             height: 200px;
-            background: url('https://via.placeholder.com/200x200?text=Hộp+Đóng') no-repeat center center; /* Placeholder hộp đóng */
+            background: url('https://www.pngall.com/wp-content/uploads/2016/05/Gift-Box-PNG-Clipart.png') no-repeat center center; /* Hộp đóng */
             background-size: contain;
             margin: auto;
             cursor: pointer;
             transition: background 0.5s ease;
         }
         #giftBox.opened {
-            background: url('https://via.placeholder.com/200x200?text=Hộp+Mở') no-repeat center center; /* Placeholder hộp mở */
+            background: url('https://www.pngall.com/wp-content/uploads/2016/05/Gift-Box-PNG-Image.png') no-repeat center center; /* Hộp mở */
             background-size: contain;
         }
         #result { 
             font-size: 24px; 
             margin-top: 20px; 
-            color: #e74c3c;
+            color: #e74c3c; /* Màu đỏ */
         }
         h1 {
-            color: #2ecc71;
+            color: #2ecc71; /* Màu xanh lá */
         }
     </style>
 </head>
@@ -47,12 +47,22 @@
         let usersLeft = 5;
         const prizes = [1000, 5000, 10000, 30000, 50000]; // Giá trị: 1k, 5k, 10k, 30k, 50k
         const claimedKey = "blindBoxClaimed_" + window.location.href;
+        const amountKey = "blindBoxAmount_" + window.location.href;
+
+        // Lấy trạng thái và số tiền từ localStorage
         let claimed = JSON.parse(localStorage.getItem(claimedKey)) || false;
+        let savedAmount = JSON.parse(localStorage.getItem(amountKey)) || null;
         const giftBox = document.getElementById("giftBox");
+
+        // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận
+        if (claimed) {
+            giftBox.classList.add("opened");
+            document.getElementById("result").innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
+        }
 
         giftBox.addEventListener("click", function() {
             if (claimed) {
-                document.getElementById("result").innerText = "Bạn đã mở hộp rồi!";
+                document.getElementById("result").innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
                 return;
             }
             
@@ -73,8 +83,11 @@
                 document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             }, 500);
 
+            // Lưu trạng thái và số tiền vào localStorage
             localStorage.setItem(claimedKey, JSON.stringify(true));
+            localStorage.setItem(amountKey, JSON.stringify(amount));
             claimed = true;
+            savedAmount = amount;
         });
     </script>
 </body>
