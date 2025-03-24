@@ -16,20 +16,34 @@
         #giftBox {
             width: 200px; 
             height: 200px;
-            background: url('https://raw.githubusercontent.com/aRod-902/aRod/main/nice-gift-with-red-ribbon-ready-birthday.jpg') no-repeat center center; /* Hộp đóng */
+            background: url('https://raw.githubusercontent.com/aRod-902/aRod/main/e753b486-3dd5-4d39-b19b-87d59841f08c.jpg') no-repeat center center; /* Hộp đóng */
             background-size: contain;
             margin: auto;
             cursor: pointer;
             transition: background 0.5s ease;
         }
         #giftBox.opened {
-            background: url('https://raw.githubusercontent.com/aRod-902/aRod/main/e753b486-3dd5-4d39-b19b-87d59841f08c.jpg') no-repeat center center; /* Hộp mở */
+            background: url('https://via.placeholder.com/200x200?text=Hộp+Mở') no-repeat center center; /* Placeholder tạm thời */
             background-size: contain;
         }
         #result { 
             font-size: 24px; 
             margin-top: 20px; 
             color: #e74c3c; /* Màu đỏ */
+        }
+        #specialPrize {
+            display: none; /* Ẩn mặc định */
+            font-size: 20px;
+            margin-top: 10px;
+            color: #2ecc71; /* Màu xanh lá */
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #specialPrizeMessage {
+            display: none; /* Ẩn mặc định */
+            font-size: 20px;
+            margin-top: 10px;
+            color: #3498db; /* Màu xanh dương */
         }
         h1 {
             color: #2ecc71; /* Màu xanh lá */
@@ -55,6 +69,8 @@
         <h1>Mở Blind Box</h1>
         <div id="giftBox"></div>
         <div id="result"></div>
+        <div id="specialPrize">Bấm vào đây để xem giải đặc biệt!</div>
+        <div id="specialPrizeMessage"></div>
         <button id="resetButton">Reset Trò Chơi</button>
     </div>
     
@@ -75,6 +91,9 @@
 
         const giftBox = document.getElementById("giftBox");
         const resetButton = document.getElementById("resetButton");
+        const result = document.getElementById("result");
+        const specialPrize = document.getElementById("specialPrize");
+        const specialPrizeMessage = document.getElementById("specialPrizeMessage");
 
         // Kiểm tra tham số admin trong URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -86,17 +105,18 @@
         // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận
         if (claimed) {
             giftBox.classList.add("opened");
-            document.getElementById("result").innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
+            result.innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
         }
 
         giftBox.addEventListener("click", function() {
             if (claimed) {
-                document.getElementById("result").innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
+                result.innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
                 return;
             }
             
             if (usersLeft <= 0) {
-                document.getElementById("result").innerText = "Hết hộp để mở!";
+                result.innerText = "Chúc mừng bạn đã nhận được giải đặc biệt";
+                specialPrize.style.display = 'block'; // Hiển thị dòng yêu cầu bấm
                 return;
             }
             
@@ -109,7 +129,7 @@
             
             usersLeft--;
             setTimeout(() => {
-                document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
+                result.innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             }, 500);
 
             // Lưu trạng thái vào localStorage
@@ -118,6 +138,13 @@
             localStorage.setItem(usersLeftKey, JSON.stringify(usersLeft));
             claimed = true;
             savedAmount = amount;
+        });
+
+        // Xử lý khi bấm vào dòng "Bấm vào đây để xem giải đặc biệt!"
+        specialPrize.addEventListener("click", function() {
+            specialPrizeMessage.innerText = "Bạn nhận được 1 cái ôm từ phó khoa đẹp trai";
+            specialPrizeMessage.style.display = 'block'; // Hiển thị thông báo giải đặc biệt
+            specialPrize.style.display = 'none'; // Ẩn dòng yêu cầu bấm
         });
 
         // Xử lý nút Reset
@@ -132,7 +159,9 @@
             savedAmount = null;
             usersLeft = 5;
             giftBox.classList.remove("opened");
-            document.getElementById("result").innerText = "";
+            result.innerText = "";
+            specialPrize.style.display = 'none';
+            specialPrizeMessage.style.display = 'none';
         });
     </script>
 </body>
