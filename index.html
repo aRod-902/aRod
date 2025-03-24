@@ -102,21 +102,21 @@
             resetButton.style.display = 'block'; // Hiển thị nút Reset nếu là admin
         }
 
-        // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận (bỏ qua cho admin)
-        if (claimed && !isAdmin) {
+        // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận
+        if (claimed) {
             giftBox.classList.add("opened");
             result.innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
         }
 
         giftBox.addEventListener("click", function() {
-            // Nếu không phải admin và đã mở hộp, hiển thị thông báo
-            if (!isAdmin && claimed) {
+            // Nếu đã mở hộp, hiển thị thông báo
+            if (claimed) {
                 result.innerText = "Bạn đã mở hộp rồi! Bạn nhận được: " + (savedAmount / 1000) + "k";
                 return;
             }
             
-            // Nếu không phải admin và hết lượt, hiển thị giải đặc biệt
-            if (!isAdmin && usersLeft <= 0) {
+            // Nếu hết lượt, hiển thị giải đặc biệt
+            if (usersLeft <= 0) {
                 result.innerText = "Chúc mừng bạn đã nhận được giải đặc biệt";
                 specialPrize.style.display = 'block'; // Hiển thị dòng yêu cầu bấm
                 return;
@@ -129,23 +129,19 @@
             const randomIndex = Math.floor(Math.random() * prizes.length);
             const amount = prizes[randomIndex];
             
-            // Chỉ giảm usersLeft nếu không phải admin
-            if (!isAdmin) {
-                usersLeft--;
-            }
+            // Giảm usersLeft
+            usersLeft--;
             
             setTimeout(() => {
                 result.innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             }, 500);
 
-            // Lưu trạng thái vào localStorage (chỉ cho người dùng thông thường)
-            if (!isAdmin) {
-                localStorage.setItem(claimedKey, JSON.stringify(true));
-                localStorage.setItem(amountKey, JSON.stringify(amount));
-                localStorage.setItem(usersLeftKey, JSON.stringify(usersLeft));
-                claimed = true;
-                savedAmount = amount;
-            }
+            // Lưu trạng thái vào localStorage
+            localStorage.setItem(claimedKey, JSON.stringify(true));
+            localStorage.setItem(amountKey, JSON.stringify(amount));
+            localStorage.setItem(usersLeftKey, JSON.stringify(usersLeft));
+            claimed = true;
+            savedAmount = amount;
         });
 
         // Xử lý khi bấm vào dòng "Bấm vào đây để xem giải đặc biệt!"
