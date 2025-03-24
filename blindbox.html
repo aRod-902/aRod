@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Box</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #result { font-size: 24px; margin-top: 20px; }
+        button { font-size: 20px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Mở Blind Box</h1>
+    <button id="openBox">Mở hộp</button>
+    <div id="result"></div>
+    
+    <script>
+        let totalAmount = 100000; 
+        let usersLeft = 10;
+        let claimed = JSON.parse(localStorage.getItem("claimed")) || false;
+        
+        document.getElementById("openBox").addEventListener("click", function() {
+            if (claimed) {
+                document.getElementById("result").innerText = "Bạn đã mở hộp rồi!";
+                return;
+            }
+            
+            if (usersLeft <= 0) {
+                document.getElementById("result").innerText = "Hết hộp để mở!";
+                return;
+            }
+            
+            let amount = Math.floor(Math.random() * (totalAmount / usersLeft * 2));
+            if (amount > totalAmount) amount = totalAmount;
+            totalAmount -= amount;
+            usersLeft--;
+            
+            document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
+            localStorage.setItem("claimed", JSON.stringify(true));
+        });
+    </script>
+</body>
+</html>
