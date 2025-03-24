@@ -16,14 +16,14 @@
         #giftBox {
             width: 200px; 
             height: 200px;
-            background: url('https://imgur.com/a/QF0GkN3') no-repeat center center; /* Hộp đóng */
+            background: url('https://i.imgur.com/QF0GkN3.png') no-repeat center center; /* Hộp đóng */
             background-size: contain;
             margin: auto;
             cursor: pointer;
             transition: background 0.5s ease;
         }
         #giftBox.opened {
-            background: url('https://imgur.com/a/vaIOv7E') no-repeat center center; /* Hộp mở */
+            background: url('https://i.imgur.com/vaIOv7E.png') no-repeat center center; /* Hộp mở */
             background-size: contain;
         }
         #result { 
@@ -34,6 +34,20 @@
         h1 {
             color: #2ecc71; /* Màu xanh lá */
         }
+        #resetButton {
+            display: none; /* Ẩn mặc định */
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #resetButton:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -41,18 +55,33 @@
         <h1>Mở Blind Box</h1>
         <div id="giftBox"></div>
         <div id="result"></div>
+        <button id="resetButton">Reset Trò Chơi</button>
     </div>
     
     <script>
         let usersLeft = 5;
-        const prizes = [1000, 5000, 10000, 20000, 50000]; // Giá trị: 1k, 5k, 10k, 30k, 50k
+        const prizes = [1000, 5000, 10000, 20000, 50000]; // Giá trị: 1k, 5k, 10k, 20k, 50k
         const claimedKey = "blindBoxClaimed_" + window.location.href;
         const amountKey = "blindBoxAmount_" + window.location.href;
+        const usersLeftKey = "blindBoxUsersLeft_" + window.location.href;
 
-        // Lấy trạng thái và số tiền từ localStorage
+        // Lấy trạng thái từ localStorage
         let claimed = JSON.parse(localStorage.getItem(claimedKey)) || false;
         let savedAmount = JSON.parse(localStorage.getItem(amountKey)) || null;
+        let savedUsersLeft = JSON.parse(localStorage.getItem(usersLeftKey));
+        if (savedUsersLeft !== null) {
+            usersLeft = savedUsersLeft; // Khôi phục usersLeft từ localStorage
+        }
+
         const giftBox = document.getElementById("giftBox");
+        const resetButton = document.getElementById("resetButton");
+
+        // Kiểm tra tham số admin trong URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'secret'; // Tham số bí mật: ?admin=secret
+        if (isAdmin) {
+            resetButton.style.display = 'block'; // Hiển thị nút Reset nếu là admin
+        }
 
         // Nếu đã mở hộp trước đó, hiển thị hộp mở và số tiền đã nhận
         if (claimed) {
@@ -83,11 +112,27 @@
                 document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             }, 500);
 
-            // Lưu trạng thái và số tiền vào localStorage
+            // Lưu trạng thái vào localStorage
             localStorage.setItem(claimedKey, JSON.stringify(true));
             localStorage.setItem(amountKey, JSON.stringify(amount));
+            localStorage.setItem(usersLeftKey, JSON.stringify(usersLeft));
             claimed = true;
             savedAmount = amount;
+        });
+
+        // Xử lý nút Reset
+        resetButton.addEventListener("click", function() {
+            // Xóa trạng thái trong localStorage
+            localStorage.removeItem(claimedKey);
+            localStorage.removeItem(amountKey);
+            localStorage.removeItem(usersLeftKey);
+
+            // Đặt lại các biến
+            claimed = false;
+            savedAmount = null;
+            usersLeft = 5;
+            giftBox.classList.remove("opened");
+            document.getElementById("result").innerText = "";
         });
     </script>
 </body>
