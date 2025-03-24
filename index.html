@@ -114,7 +114,8 @@
                 return;
             }
             
-            if (usersLeft <= 0) {
+            // Nếu là admin, bỏ qua kiểm tra usersLeft để mở không giới hạn
+            if (!isAdmin && usersLeft <= 0) {
                 result.innerText = "Chúc mừng bạn đã nhận được giải đặc biệt";
                 specialPrize.style.display = 'block'; // Hiển thị dòng yêu cầu bấm
                 return;
@@ -127,7 +128,11 @@
             const randomIndex = Math.floor(Math.random() * prizes.length);
             const amount = prizes[randomIndex];
             
-            usersLeft--;
+            // Chỉ giảm usersLeft nếu không phải admin
+            if (!isAdmin) {
+                usersLeft--;
+            }
+            
             setTimeout(() => {
                 result.innerText = "Bạn nhận được: " + (amount / 1000) + "k";
             }, 500);
