@@ -5,16 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blind Box</title>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; background-color: #f8f8f8; }
-        .container { margin-top: 50px; }
+        body { 
+            text-align: center; 
+            font-family: Arial, sans-serif; 
+            background-color: #f8f8f8; 
+        }
+        .container { 
+            margin-top: 50px; 
+        }
         #giftBox {
-            width: 150px; height: 150px;
-            background: url('https://i.imgur.com/3Q3QZ1i.png') no-repeat center center;
+            width: 200px; 
+            height: 200px;
+            background: url('https://via.placeholder.com/200x200?text=Hộp+Đóng') no-repeat center center; /* Placeholder hộp đóng */
             background-size: contain;
             margin: auto;
             cursor: pointer;
+            transition: background 0.5s ease;
         }
-        #result { font-size: 24px; margin-top: 20px; }
+        #giftBox.opened {
+            background: url('https://via.placeholder.com/200x200?text=Hộp+Mở') no-repeat center center; /* Placeholder hộp mở */
+            background-size: contain;
+        }
+        #result { 
+            font-size: 24px; 
+            margin-top: 20px; 
+            color: #e74c3c;
+        }
+        h1 {
+            color: #2ecc71;
+        }
     </style>
 </head>
 <body>
@@ -26,11 +45,12 @@
     
     <script>
         let usersLeft = 5;
-        const prizes = [1000, 5000, 10000, 30000, 50000]; // Giá trị cố định: 1k, 5k, 10k, 30k, 50k
+        const prizes = [1000, 5000, 10000, 30000, 50000]; // Giá trị: 1k, 5k, 10k, 30k, 50k
         const claimedKey = "blindBoxClaimed_" + window.location.href;
         let claimed = JSON.parse(localStorage.getItem(claimedKey)) || false;
-        
-        document.getElementById("giftBox").addEventListener("click", function() {
+        const giftBox = document.getElementById("giftBox");
+
+        giftBox.addEventListener("click", function() {
             if (claimed) {
                 document.getElementById("result").innerText = "Bạn đã mở hộp rồi!";
                 return;
@@ -41,12 +61,18 @@
                 return;
             }
             
-            // Chọn ngẫu nhiên một giải thưởng từ mảng prizes
+            // Hiệu ứng mở hộp
+            giftBox.classList.add("opened");
+
+            // Chọn ngẫu nhiên giải thưởng
             const randomIndex = Math.floor(Math.random() * prizes.length);
             const amount = prizes[randomIndex];
             
             usersLeft--;
-            document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
+            setTimeout(() => {
+                document.getElementById("result").innerText = "Bạn nhận được: " + (amount / 1000) + "k";
+            }, 500);
+
             localStorage.setItem(claimedKey, JSON.stringify(true));
             claimed = true;
         });
